@@ -38,7 +38,7 @@ def passgen(charset:str=DEFAULT_CHARSET, length:int=DEFAULT_LENGTH):
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using secrets module! see https://github.com/imKokoT')
+    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using secrets module! see https://github.com/imKokoT/passgen')
     parser.add_argument('-l', '--length', type=int, default=DEFAULT_LENGTH, help=f'password length; default {DEFAULT_LENGTH}', required=False)
     parser.add_argument('-c', '--charset', type=str, default=DEFAULT_CHARSET, help=f'password charset; default {DEFAULT_CHARSET.replace('%','%%')}', required=False)
     args = parser.parse_args()
