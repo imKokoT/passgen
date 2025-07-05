@@ -43,7 +43,9 @@ HEX_LOWER_CHARSET = string.hexdigits.replace('ABCDEF', '')
 HEX_UPPER_CHARSET = string.hexdigits.replace('abcdef', '')
 DIGITS_CHARSET = string.digits
 ALPHADIGITS_CHARSET = string.ascii_letters + string.digits
-PLACEHOLDER_PATTERN = r'(?<!\\){([a-zA-Z0-9\s]*)}'
+# i just hate regex
+PLACEHOLDER_PATTERN = re.compile(r'(?<!\\){([^{}]*)}')
+CUSTOM_PATTERN = re.compile(r'c(?<!\\)\[((?:[^\]\\]|\\.)*?)\](?!\])')
 
 
 def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
@@ -63,14 +65,14 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             `{8 x}-{4 x}-{4 x}-{4 x}-{12 x}` returns UUID like format in lowercase.
 
             ### charsets
-            you can combine charsets. example `{16 A a d c[-+$%=\\[\\]/]}`
+            you can combine charsets. duplicates don't affect to probability. example `{16 A a d c[-+$%=\\[\\]/]}`
             - A -> ascii upper letters
             - a -> ascii lower letters
             - d -> digits
             - X -> upper hex
             - x -> lower hex
             - s -> symbols from `SYMBOLS_CHARSET`
-            - c[] -> your symbols in `[]`; `\\[` `\\]` to use them as target symbols. duplicates will be removed
+            - c[] -> your symbols in `[]`; `\\[` `\\]` to use them as target symbols.
     
     Raises:
         ValueError: if wrong format
@@ -99,15 +101,19 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
                 case 'X': charset.update(HEX_UPPER_CHARSET)
                 case 'x': charset.update(HEX_LOWER_CHARSET)
                 case 's': charset.update(SYMBOLS_CHARSET)
-                case 'c': raise NotImplementedError('soon')
+                case _:
+                    if not re.match(CUSTOM_PATTERN, rule): continue
+                    charset.update(
+                        re.findall(CUSTOM_PATTERN, rule)[0].replace('\\[', '[').replace('\\]', ']')
+                    )
         
-            if not charset:
-                raise ValueError(f'charset of {{{p}}} is empty!')
+        if not charset:
+            raise ValueError(f'charset of {{{p}}} is empty!')
 
-            format = re.sub(
-                PLACEHOLDER_PATTERN,
-                lambda m: ''.join(secrets.choice(tuple(charset)) for _ in range(length)),
-                format, count=1)
+        format = re.sub(
+            PLACEHOLDER_PATTERN,
+            lambda m: ''.join(secrets.choice(tuple(charset)) for _ in range(length)),
+            format, count=1)
         
     return format.replace('\\{', '{').replace('\\}', '}')
 
