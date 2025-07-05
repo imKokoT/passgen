@@ -77,9 +77,6 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             - s -> symbols from `SYMBOLS_CHARSET`
             - c[] -> your symbols in `[]`; `\\[` `\\]` to use them as target symbols. duplicates will be removed
     '''
-    # password = ''.join(secrets.choice(charset) for _ in range(length))
-    # return password
-    
     placeholdersRules = re.findall(PLACEHOLDER_PATTERN, format.replace('\\{', '\ufff0').replace('\\}', '\ufff1'))
     for p in placeholdersRules:
         rules = p.strip().split(' ')
@@ -111,7 +108,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             lambda m: ''.join(secrets.choice(tuple(charset)) for _ in range(length)),
             format, count=1)
         
-    return format
+    return format.replace('\\{', '{').replace('\\}', '}')
 
 
 if __name__ == "__main__":
