@@ -126,8 +126,9 @@ if __name__ == "__main__":
     try:
         import clipboard
     except ModuleNotFoundError:
-        COPY_TO_CLIPBOARD = False
-        print(f'{COPY_TO_CLIPBOARD=} because you didn\'t install "clipboard" module to copy. please `pip install clipboard`')
+        if COPY_TO_CLIPBOARD:
+            COPY_TO_CLIPBOARD = False
+            print(f'{COPY_TO_CLIPBOARD=} because you didn\'t install "clipboard" module to copy. please `pip install clipboard`')
 
     parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using `secrets` module! see https://github.com/imKokoT')
     parser.add_argument('-f', '--format', type=str, default=DEFAULT_FORMAT, help=f'format of password; default "{DEFAULT_FORMAT}"', required=False)
