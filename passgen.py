@@ -136,9 +136,13 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     pwds = ''
-    while args.count:
-        pwd = passgen(args.format)
-        print(pwd)
-        pwds += pwd + '\n'
-        args.count -= 1
+    try:
+        while args.count:
+            pwd = passgen(args.format)
+            print(pwd)
+            pwds += pwd + '\n'
+            args.count -= 1
+    except ValueError as e:
+        print(f'ERROR: {e}')
+        exit(1)
     if COPY_TO_CLIPBOARD: clipboard.copy(pwds.strip())
