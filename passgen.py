@@ -81,7 +81,8 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
     Raises:
         ValueError: if wrong format
     '''
-    placeholdersRules = re.findall(PLACEHOLDER_PATTERN, format.replace('\\{', '\ufff0').replace('\\}', '\ufff1'))
+    format = format.replace('\\{', '\ufff0').replace('\\}', '\ufff1')
+    placeholdersRules = re.findall(PLACEHOLDER_PATTERN, format)
     for p in placeholdersRules:
         rules = p.strip().split(' ')
         if not rules or rules and not rules[0].isdigit(): 
@@ -120,7 +121,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             lambda m: ''.join(secrets.choice(tuple(charset)) for _ in range(length)),
             format, count=1)
         
-    return format.replace('\\{', '{').replace('\\}', '}')
+    return format.replace('\ufff0', '{').replace('\ufff1', '}')
 
 
 if __name__ == "__main__":
