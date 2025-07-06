@@ -44,6 +44,8 @@ HEX_LOWER_CHARSET = string.hexdigits.replace('ABCDEF', '')
 HEX_UPPER_CHARSET = string.hexdigits.replace('abcdef', '')
 DIGITS_CHARSET = string.digits
 ALPHADIGITS_CHARSET = string.ascii_letters + string.digits
+EXTENDED_SYMBOLS_CHARSET = string.punctuation # includes dots etc
+OCT_CHARSET = string.octdigits
 # i just hate regex
 PLACEHOLDER_PATTERN = re.compile(r'(?<!\\){((?:[^}\\]|\\.)*?)}(?!})')
 CUSTOM_PATTERN = re.compile(r'(?<!\\)\[((?:[^\]\\]|\\.)*?)\](?!\])')
@@ -74,6 +76,8 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             - X -> upper hex
             - x -> lower hex
             - s -> symbols from `SYMBOLS_CHARSET`
+            - S -> extended symbols that includes dot, coma etc
+            - o -> oct
             - [] -> your symbols in `[]`; `\\[`, `\\]`, `\\{` and `\\}` to use them as target symbols.
     
     Raises:
@@ -104,6 +108,8 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
                 case 'X': charset.update(HEX_UPPER_CHARSET)
                 case 'x': charset.update(HEX_LOWER_CHARSET)
                 case 's': charset.update(SYMBOLS_CHARSET)
+                case 'S': charset.update(EXTENDED_SYMBOLS_CHARSET)
+                case 'o': charset.update(OCT_CHARSET)
                 case _:
                     if not re.match(CUSTOM_PATTERN, rule): continue
                     charset.update(
