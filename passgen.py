@@ -33,7 +33,8 @@ VERSION = 2
 # --- SETTINGS ------------------------------------------------------------------------------------------
 DEFAULT_LENGTH = 24                        # default password length; default 24
 COPY_TO_CLIPBOARD = True                   # if True and run as app, it will copy password to clipboard; default True
-SYMBOLS_CHARSET = '!@#$%^&*()-_=+[]{}<>?'  # charset of default ascii symbols; key `s` -------------------------------------------------------------------------------------------------------
+SYMBOLS_CHARSET = '!@#$%^&*()-_=+[]{}<>?'  # charset of default ascii symbols; key `s`
+# -------------------------------------------------------------------------------------------------------
 
 DEFAULT_FORMAT = f'{{{DEFAULT_LENGTH}}}'
 DEFAULT_CHARSET = string.ascii_letters + string.digits + SYMBOLS_CHARSET
@@ -128,9 +129,9 @@ if __name__ == "__main__":
         import clipboard
     except ModuleNotFoundError:
         COPY_TO_CLIPBOARD = False
-        print(f'{COPY_TO_CLIPBOARD=} because you didn\'t install "clipboard" module to copy. please pip install clipboard')
+        print(f'{COPY_TO_CLIPBOARD=} because you didn\'t install "clipboard" module to copy. please `pip install clipboard`')
 
-    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using secrets module! see https://github.com/imKokoT')
+    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using `secrets` module! see https://github.com/imKokoT')
     parser.add_argument('-f', '--format', type=str, default=DEFAULT_FORMAT, help=f'format of password; default "{DEFAULT_FORMAT}"', required=False)
     parser.add_argument('-c', '--count', type=int, default=1, help=f'how many passwords to generate', required=False)
 
@@ -141,4 +142,4 @@ if __name__ == "__main__":
         print(pwd)
         pwds += pwd + '\n'
         args.count -= 1
-    if COPY_TO_CLIPBOARD: clipboard.copy(pwd)
+    if COPY_TO_CLIPBOARD: clipboard.copy(pwds.strip())
