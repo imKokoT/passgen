@@ -45,7 +45,7 @@ HEX_UPPER_CHARSET = string.hexdigits.replace('abcdef', '')
 DIGITS_CHARSET = string.digits
 ALPHADIGITS_CHARSET = string.ascii_letters + string.digits
 # i just hate regex
-PLACEHOLDER_PATTERN = re.compile(r'(?<!\\){([^{}]*)}')
+PLACEHOLDER_PATTERN = re.compile(r'(?<!\\){((?:[^}\\]|\\.)*?)}(?!})')
 CUSTOM_PATTERN = re.compile(r'(?<!\\)\[((?:[^\]\\]|\\.)*?)\](?!\])')
 
 
@@ -58,9 +58,8 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
 
             generated chars replaces instead of `{}`. you can write rule in it to format output result. 
             you can use any other symbols out of `{}` to make it different format. use `\\{` and `\\}` to 
-            place braces out of placeholder, in placeholder \\{ and \\} don't work. number in braces 
-            describes how many symbols to generate. if format is wrong, will raise ValueError or handle it 
-            as static string.
+            place braces out of placeholder. number in braces describes how many symbols to generate. 
+            if format is wrong, will raise ValueError or handle it as static string.
 
             for example `{16}` returns password of `DEFAULT_CHARSET` symbols with length 16.
 
@@ -75,8 +74,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             - X -> upper hex
             - x -> lower hex
             - s -> symbols from `SYMBOLS_CHARSET`
-            - b -> `{}`
-            - [] -> your symbols in `[]`; `\\[` `\\]` to use them as target symbols.
+            - [] -> your symbols in `[]`; `\\[`, `\\]`, `\\{` and `\\}` to use them as target symbols.
     
     Raises:
         ValueError: if wrong format
@@ -95,7 +93,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
                 PLACEHOLDER_PATTERN,
                 lambda m: ''.join(secrets.choice(DEFAULT_CHARSET) for _ in range(length)),
                 format, count=1)
-            break
+            continue
 
         charset = set()
         for rule in rules[1:]:
@@ -106,7 +104,6 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
                 case 'X': charset.update(HEX_UPPER_CHARSET)
                 case 'x': charset.update(HEX_LOWER_CHARSET)
                 case 's': charset.update(SYMBOLS_CHARSET)
-                case 'b': charset.update('{}') # because i hate regex
                 case _:
                     if not re.match(CUSTOM_PATTERN, rule): continue
                     charset.update(
