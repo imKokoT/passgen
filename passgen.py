@@ -49,6 +49,7 @@ OCT_CHARSET = string.octdigits
 # i just hate regex
 PLACEHOLDER_PATTERN = re.compile(r'(?<!\\){((?:[^}\\]|\\.)*?)}(?!})')
 CUSTOM_PATTERN = re.compile(r'(?<!\\)\[((?:[^\]\\]|\\.)*?)\](?!\])')
+EXCLUDE_PATTERN = re.compile(r'!(?<!\\)\[((?:[^\]\\]|\\.)*?)\](?!\])')
 
 
 def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
@@ -78,7 +79,11 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             - s -> symbols from `SYMBOLS_CHARSET`
             - S -> extended symbols that includes dot, coma etc
             - o -> oct
-            - [] -> your symbols in `[]`; `\\[`, `\\]`, `\\{` and `\\}` to use them as target symbols.
+            - [] -> your symbols in `[]`; `\\[`, `\\]`, `\\{` and `\\}` to use them as target symbols
+            
+            ### excluding symbols
+            if you use some build-in charsets you can also exclude symbols with `![]`. for example
+            `{16 A a s ![-_/]}` returns password without `-`, `_` and `/`
     
     Raises:
         ValueError: if wrong format
@@ -111,10 +116,16 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
                 case 'S': charset.update(EXTENDED_SYMBOLS_CHARSET)
                 case 'o': charset.update(OCT_CHARSET)
                 case _:
-                    if not re.match(CUSTOM_PATTERN, rule): continue
-                    charset.update(
-                        re.findall(CUSTOM_PATTERN, rule)[0].replace('\\[', '[').replace('\\]', ']')
-                    )
+                    if re.match(CUSTOM_PATTERN, rule):
+                        charset.update(
+                            re.findall(CUSTOM_PATTERN, rule)[0].replace('\\[', '[').replace('\\]', ']')
+                        )
+                    if re.match(EXCLUDE_PATTERN, rule):
+                        charset.difference_update(
+                            re.findall(EXCLUDE_PATTERN, rule)[0].replace('\\[', '[').replace('\\]', ']')
+                        )
+                    else:
+                        continue
         
         if not charset:
             raise ValueError(f'charset of {{{p}}} is empty!')
@@ -136,7 +147,7 @@ if __name__ == "__main__":
             COPY_TO_CLIPBOARD = False
             print(f'{COPY_TO_CLIPBOARD=} because you didn\'t install "clipboard" module to copy. please `pip install clipboard`')
 
-    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using `secrets` module! see https://github.com/imKokoT')
+    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using `secrets` module! see https://github.com/imKokoT\nif you think that this micro-project deserves more attention, just star it, thanks!')
     parser.add_argument('-f', '--format', type=str, default=DEFAULT_FORMAT, help=f'format of password; default "{DEFAULT_FORMAT}"', required=False)
     parser.add_argument('-c', '--count', type=int, default=1, help=f'how many passwords to generate', required=False)
 
