@@ -58,7 +58,6 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
     Args:
         format (str): format of password
             ### how `format` works
-
             generated chars replaces instead of `{}`. you can write rule in it to format output result. 
             you can use any other symbols out of `{}` to make it different format. use `\\{` and `\\}` to 
             place braces out of placeholder. number in braces describes how many symbols to generate. 
@@ -67,7 +66,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
             for example `{16}` returns password of `DEFAULT_CHARSET` symbols with length 16.
 
             you can use presets of different charsets; write it after length. for example
-            `{8 x}-{4 x}-{4 x}-{4 x}-{12 x}` returns UUID like format in lowercase.
+            `{8 x}-{4 x}-4{3 x}-{1 [89ab]}{3 x}-{12 x}` returns UUID like format in lowercase.
 
             ### charsets
             you can combine charsets. duplicates don't affect to probability. example `{16 A a d [-+$%=\\[\\]/]}`
@@ -120,7 +119,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
                         charset.update(
                             re.findall(CUSTOM_PATTERN, rule)[0].replace('\\[', '[').replace('\\]', ']')
                         )
-                    if re.match(EXCLUDE_PATTERN, rule):
+                    elif re.match(EXCLUDE_PATTERN, rule):
                         charset.difference_update(
                             re.findall(EXCLUDE_PATTERN, rule)[0].replace('\\[', '[').replace('\\]', ']')
                         )
@@ -147,7 +146,7 @@ if __name__ == "__main__":
             COPY_TO_CLIPBOARD = False
             print(f'{COPY_TO_CLIPBOARD=} because you didn\'t install "clipboard" module to copy. please `pip install clipboard`')
 
-    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using `secrets` module! see https://github.com/imKokoT\nif you think that this micro-project deserves more attention, just star it, thanks!')
+    parser = argparse.ArgumentParser(description=f'passgen v{VERSION} for secure password generating by imKokoT using `secrets` module! see https://github.com/imKokoT. if you think that this micro-project deserves more attention, just star it, thanks!')
     parser.add_argument('-f', '--format', type=str, default=DEFAULT_FORMAT, help=f'format of password; default "{DEFAULT_FORMAT}"', required=False)
     parser.add_argument('-c', '--count', type=int, default=1, help=f'how many passwords to generate', required=False)
 
