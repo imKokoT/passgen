@@ -22,7 +22,7 @@ It's recommended to import only function like `from passgen import passgen`
 # Password formatting
 ### how `format` works
 Generated chars replaces instead of `{}`. You can write rule in it to format output result. 
-You can use any other symbols out of `{}` to make it different format. Use `\\{` and `\\}` to 
+Symbols out of `{}` will be static. Use `\\{` and `\\}` to 
 place braces out of placeholder. Number in braces describes how many symbols to generate. 
 If format is wrong, will raise ValueError or handle it as static string.
 

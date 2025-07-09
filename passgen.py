@@ -59,7 +59,7 @@ def passgen(format:str=f'{{{DEFAULT_LENGTH}}}') -> str:
         format (str): format of password
             ### how `format` works
             generated chars replaces instead of `{}`. you can write rule in it to format output result. 
-            you can use any other symbols out of `{}` to make it different format. use `\\{` and `\\}` to 
+            symbols out of `{}` will be static. use `\\{` and `\\}` to 
             place braces out of placeholder. number in braces describes how many symbols to generate. 
             if format is wrong, will raise ValueError or handle it as static string.
 
