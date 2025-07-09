@@ -1,5 +1,6 @@
 # PASSGEN
 Simple tool to generate secure passwords, tokens etc, for you or your project.
+![Demo](docs/demo.png)
 
 # Requirements
 - Python 3.10+
