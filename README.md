@@ -22,7 +22,7 @@ It's recommended to import only function like `from passgen import passgen`
 # Password formatting
 ### how `format` works
 Generated chars replaces instead of `{}`. You can write rule in it to format output result. 
-Symbols out of `{}` will be static. Use `\\{` and `\\}` to 
+Symbols out of `{}` will be static. Use `\{` and `\}` to 
 place braces out of placeholder. Number in braces describes how many symbols to generate. 
 If format is wrong, will raise ValueError or handle it as static string.
 
@@ -32,7 +32,7 @@ You can use presets of different charsets; write it after length. For example
 `{8 x}-{4 x}-4{3 x}-{1 [89ab]}{3 x}-{12 x}` returns UUID like format in lowercase.
 
 ### charsets
-You can combine charsets. Duplicates don't affect to probability. Example `{16 A a d [-+$%=\\[\\]/]}`
+You can combine charsets. Duplicates don't affect to probability. Example `{16 A a d [-+$%=\[\]/]}`
 - A -> ascii upper letters
 - a -> ascii lower letters
 - d -> digits
@@ -41,7 +41,7 @@ You can combine charsets. Duplicates don't affect to probability. Example `{16 A
 - s -> symbols from `SYMBOLS_CHARSET`
 - S -> extended symbols that includes dot, coma etc
 - o -> oct
-- [] -> your symbols in `[]`; `\\[`, `\\]`, `\\{` and `\\}` to use them as target symbols
+- [] -> your symbols in `[]`; `\[`, `\]`, `\{` and `\}` to use them as target symbols
 
 ### excluding symbols
 If you use some build-in charsets you can also exclude symbols with `![]`. For example
