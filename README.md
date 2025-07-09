@@ -14,7 +14,7 @@ For Linux - */usr/bin/* for example and `sudo chmod +x passgen.py`. After you wi
 
 For Windows - *C:\\ProgramFiles\\Scripts\\* for example and add this folder to *PATH*. After you will able to call `passgen` or `passgen.py`
 
-Running `passgen.py` without arguments returns default password. To change password format use `-f` key: `passgen.py -f {4 d}` will return pin-code. See `passgen.py -h`!
+Running `passgen.py` without arguments returns default password. To change password format use `-f` key: `passgen.py -f "{4 d}"` will return pin-code. See `passgen.py -h`!
 
 ## As module
 It's recommended to import only function like `from passgen import passgen`
